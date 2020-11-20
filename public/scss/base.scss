@@ -1,0 +1,50 @@
+@use './color.scss';
+
+html, body {
+	color: color.$defColor;
+	font-size: 16px;
+}
+
+ul, li, p, div, form, h1, h2, h3, h4, h5, header, footer, section, aside, article, nav {
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+
+a:link:not(.btn), a:visited:not(.btn), a:active:not(.btn), a:hover:not(.btn) {
+	color: inherit;
+}
+
+
+header.header-wrapper {
+	user-select: none;
+	background-color: color.$defColor;
+	display: flex;
+	color: color.$activeColor;
+	align-items: center;
+	justify-content: space-between;
+	.logo {
+		padding: 1em;
+	}
+	.navi-wrapper {
+		display: flex;
+		align-items: center;
+		.navi {
+			padding: 1em;
+		}
+		.navi.active {
+			background-color: color.$selBg;
+		}
+	}
+}
+
+.title-bar {
+	margin: 1em auto;
+	small {
+		color: color.$lightColor;
+		margin-left: 1em;
+	}
+}
+
+
+.divide {width: 0; height: 30px; border-left: 1px solid #999; margin: 0 1em;}
