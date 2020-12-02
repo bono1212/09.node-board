@@ -8,7 +8,6 @@ const session = require('./modules/session-conn');
 const morgan = require('./modules/morgan-conn');
 const local = require('./modules/local-conn');
 
-
 /** 라우터 등록 **********************/
 const testRouter = require('./routes/test');
 const bookRouter = require('./routes/book');
@@ -24,11 +23,10 @@ app.listen(process.env.PORT, () => {
 /** 초기설정 **********************/
 app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, './views'));
-app.locals.pretty = true;
 
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
-//app.use(morgan());
+app.use(morgan());
 app.use(session());
 app.use(local());
 

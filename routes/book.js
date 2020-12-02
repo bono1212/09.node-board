@@ -52,16 +52,16 @@ router.get('/write', isUser, (req, res, next) => {
 router.get('/write/:id', isUser, async (req, res, next) => {
 	let connect, rs, pug;
 	try {
-		//rs = await sqlGen('books', 'S', { where: ['id', req.params.id] });
+		// rs = await sqlGen('books', 'S', { where: ['id', req.params.id] });
 		rs = await sqlGen('books', 'S', { 
 			where: {
-				op: 'AND',
-				fields: [ 
-				['id', req.params.id],
-				 ['uid', req.session.user.id]
+				op: 'AND', 
+				fields: [
+					['id', req.params.id], 
+					['uid', req.session.user.id]
 				]
-			}
-				});
+			} 
+		});
 		rs[0][0].wdate = moment(rs[0][0].wdate).format('YYYY-MM-DD');
 		pug = {
 			file: 'book-update',
@@ -87,7 +87,7 @@ router.post('/save', isUser, upload.single('upfile'), async (req, res, next) => 
 		else {
 			// 파일을 올리지 않았거나, 올렸거나
 			let rs = await sqlGen('books', 'I', {
-				fields: ['title', 'writer', 'content', 'wdate'], 
+				field: ['title', 'writer', 'content', 'wdate'], 
 				data: req.body, 
 				file: req.file
 			});
@@ -106,10 +106,10 @@ router.get('/delete/:id', isUser, async (req, res, next) => {
 		// sql = 'SELECT savefile FROM books WHERE id='+req.params.id;
 		rs = await sqlGen('books', 'S', {
 			where: {
-				op: 'AND',
-				fields: [ 
-					['id', req.params.id],
-				 	['uid', req.session.user.id]
+				op: 'AND', 
+				fields: [
+					['id', req.params.id], 
+					['uid', req.session.user.id]
 				]
 			}
 		});
@@ -117,12 +117,12 @@ router.get('/delete/:id', isUser, async (req, res, next) => {
 		// sql = `DELETE FROM books WHERE id=${req.params.id}`;
 		rs = await sqlGen('books', 'D', {
 			where: {
-				op: 'AND',
-				fields: [ 
-					['id', req.params.id],
-				 	['uid', req.session.user.id]
+				op: 'AND', 
+				fields: [
+					['id', req.params.id], 
+					['uid', req.session.user.id]
 				]
-			}
+			} 
 		});
 		res.send(alert(rs[0].affectedRows > 0 ? '삭제되었습니다.' : '삭제에 실패하였습니다.', '/book'));
 	}
@@ -142,26 +142,27 @@ router.post('/change', isUser, upload.single('upfile'), async (req, res, next) =
 				// sql = 'SELECT savefile FROM books WHERE id='+req.body.id;
 				rs = await sqlGen('books', 'S', {
 					where: {
-						op: 'AND',
-						fields: [ 
-						['id', req.params.id],
-						 ['uid', req.session.user.id]
+						op: 'AND', 
+						fields: [
+							['id', req.body.id], 
+							['uid', req.session.user.id]
 						]
-					},
-					field: ['savefile']});
+					}, 
+					field: ['savefile']
+				});
 				if(rs[0][0].savefile) await fs.remove(getPath(rs[0][0].savefile));
 			}
 			rs = await sqlGen('books', 'U', {
-				fields: ["title", "wdate", "writer", "content"], 
+				field: ["title", "wdate", "writer", "content"], 
 				data: req.body, 
 				file: req.file,
 				where: {
-					op: 'AND',
-					fields: [ 
-					['id', req.params.id],
-					 ['uid', req.session.user.id]
+					op: 'AND', 
+					fields: [
+						['id', req.body.id], 
+						['uid', req.session.user.id]
 					]
-				}
+				} 
 			});
 			res.send(alert(rs[0].affectedRows > 0 ? '수정되었습니다.' : '수정에 실패하였습니다.', '/book'));
 		}
@@ -211,20 +212,26 @@ router.get('/remove/:id', isUser, async (req, res, next) => {
 		// sql = 'SELECT savefile FROM books WHERE id='+req.params.id;
 		rs = await sqlGen('books', 'S', {
 			where: {
-				op: 'AND',
-				fields: [ 
-				['id', req.params.id],
-				 ['uid', req.session.user.id]
+				op: 'AND', 
+				fields: [
+					['id', req.params.id], 
+					['uid', req.session.user.id]
 				]
-			},
-			fields: ['savefile']
+			}, 
+			field: ['savefile']
 		});
 		await fs.remove(getPath(rs[0][0].savefile));
 		// sql = 'UPDATE books SET savefile=NULL, realfile=NULL, filesize=NULL WHERE id='+req.params.id;
 		rs = await sqlGen('books', 'U', {
-			where: ['id', req.params.id], 
-			fields: ['savefile', 'realfile', 'filesize'],
-			data: {savefile:null, realfile:null, filesize:null}
+			field: ['savefile', 'realfile', 'filesize'],
+			data: {savefile:null, realfile:null, filesize:null},
+			where: {
+				op: 'AND', 
+				fields: [
+					['id', req.params.id], 
+					['uid', req.session.user.id]
+				]
+			} 
 		});
 		res.json({ code: 200 });
 	}
